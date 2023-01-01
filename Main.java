@@ -11,6 +11,8 @@ public class Main {
     public static final int PRINT_USER_PROPERTIES= 4;
     public static final int SEARCH_BY_PARAMETERS= 5;
     public static final int BACK_TO_MAIN_MENU= 6;
+
+    //סיבוכיות של o(N)
     public static void main(String[] args) {
 
         int inputMainMenu;

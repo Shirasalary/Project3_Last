@@ -4,7 +4,6 @@ public class User {
     private String password;
     private String cellPhone;
     private boolean isMediator;
-
     //סיבוכיות של o(N)
     public User(String name,String password,String cellPhone,boolean isMediator)
     {

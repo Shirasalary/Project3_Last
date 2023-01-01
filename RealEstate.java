@@ -639,7 +639,7 @@ public class RealEstate {
         {
             for (int i = 0; i<this.users.length; i++)
             {
-                if (this.users[i].getName()== name)
+                if (this.users[i].getName().equals(name))
                 {
                     isExistUserName = true;
                     break;
