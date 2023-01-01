@@ -28,7 +28,7 @@ public class Main {
             System.out.println("Press 3 for end the program");
             inputMainMenu = scanner.nextInt();
 
-            if (!conditionMainMenu(inputMainMenu))
+            if (!checkInputMainMenu(inputMainMenu))
             {
                 System.out.println("Please press number between 1 to 3 ");
                 inputMainMenu = scanner.nextInt();
@@ -59,16 +59,18 @@ public class Main {
                        System.out.println("Press 6 for back to MAIN MENU");
                        inputSecondaryMenu = scanner.nextInt();
 
-                       if (!conditionSecondaryMenu(inputSecondaryMenu))
+                       if (inputSecondaryMenu == BACK_TO_MAIN_MENU) {
+                           break;
+                       }
+                       if (!conditionSecondaryMenu(inputSecondaryMenu) )
                        {
                            System.out.println("Please press number between 1 to 6 ");
                            inputSecondaryMenu = scanner.nextInt();
                        }
-                       if (inputMainMenu == BACK_TO_MAIN_MENU)
+                       if (inputSecondaryMenu == BACK_TO_MAIN_MENU)
                        {
                            break;
-                       }
-                       if (inputSecondaryMenu==PUBLISH_PROPERTY)
+                       }else if (inputSecondaryMenu==PUBLISH_PROPERTY)
                        {
                            isSuccessfullyPosted = realEstateUser.postNewProperty(userLogin);
                            if (isSuccessfullyPosted)
@@ -83,32 +85,47 @@ public class Main {
                            realEstateUser.printAllProperties();
                        } else if (inputSecondaryMenu == PRINT_USER_PROPERTIES) {
                            realEstateUser.printProperties(userLogin);
-                       } else if (inputMainMenu == BACK_TO_MAIN_MENU) {
-                           break;
+                       } else if (inputSecondaryMenu == SEARCH_BY_PARAMETERS) {
+                              realEstateUser.search();
                        }
-                   }while (!conditionSecondaryMenu(inputSecondaryMenu) || !isSuccessfullyPosted);
+                   }while (!checkInputSecondaryMenu(inputSecondaryMenu)||
+                           conditionSecondaryMenu(inputSecondaryMenu) || !isSuccessfullyPosted);
 
 
                }
             }
 
-        }while ( !conditionMainMenu(inputMainMenu) ||inputMainMenu == CREATE_USER ||userLogin== null
-        || inputSecondaryMenu == BACK_TO_MAIN_MENU);
+        }while ( conditionMainMenu(inputMainMenu) || !checkInputMainMenu(inputMainMenu)||userLogin== null
+                || inputSecondaryMenu == BACK_TO_MAIN_MENU);
 
     }
 
 
+    //סיבוכיות של o(1)
     public static boolean conditionMainMenu(int inputMainMenu)
     {
-       return ((inputMainMenu<1&&inputMainMenu>3)||(inputMainMenu==CREATE_USER || inputMainMenu== LOGIN ));
+       return ((inputMainMenu==CREATE_USER || inputMainMenu== LOGIN ));
     }
 
+    //סיבוכיות של o(1)
+    public static boolean checkInputMainMenu (int inputMainMenu)
+    {
+        return (inputMainMenu>=1 && inputMainMenu<=3);
+    }
+
+    //סיבוכיות של o(1)
     public static boolean conditionSecondaryMenu(int inputSecondaryMenu)
     {
-        return ( (inputSecondaryMenu<1&&inputSecondaryMenu>6) ||( inputSecondaryMenu==PUBLISH_PROPERTY
-                ||inputSecondaryMenu==REMOVE_PROPERTY || inputSecondaryMenu==PRINT_ALL_PROPERTIES
-                || inputSecondaryMenu==PRINT_USER_PROPERTIES || inputSecondaryMenu==SEARCH_BY_PARAMETERS));
+        return (( inputSecondaryMenu==PUBLISH_PROPERTY ||inputSecondaryMenu==REMOVE_PROPERTY ||
+                inputSecondaryMenu==PRINT_ALL_PROPERTIES || inputSecondaryMenu==PRINT_USER_PROPERTIES
+                || inputSecondaryMenu==SEARCH_BY_PARAMETERS));
 
+    }
+
+    //סיבוכיות של o(1)
+    public static boolean checkInputSecondaryMenu (int inputSecondaryMenu)
+    {
+        return (inputSecondaryMenu>=1 && inputSecondaryMenu<=6);
     }
 
 }

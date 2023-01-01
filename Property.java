@@ -15,6 +15,7 @@ public class Property {
     public static final int FOR_RENT = 1;
     public static final int FOR_SALE = 2;
 
+    //סיבוכיות של o(N)
     public Property(City city,String street,Integer roomNum,float price,Integer type,
                     boolean isForRent,Integer houseNum, int floor,User userPublish){
         this.city=city;
@@ -32,73 +33,80 @@ public class Property {
         }
     }
 
+    //סיבוכיות של o(1)
     public void setForRent(boolean forRent) {
         this.isForRent = forRent;
     }
 
+    //סיבוכיות של o(1)
     public void setRoomNum(Integer roomNum) {
         this.roomNum = roomNum;
     }
 
+    //סיבוכיות של o(1)
     public void setFloor(int floor) {
         this.floor = floor;
     }
 
+    //סיבוכיות של o(1)
     public void setPrice(float price) {
         this.price = price;
     }
 
+    //סיבוכיות של o(1)
     public void setHouseNum(Integer houseNum) {
         this.houseNum = houseNum;
     }
 
+    //סיבוכיות של o(1)
     public Integer getType() {
         return this.type;
     }
 
+    //סיבוכיות של o(1)
     public User getUserPublish() {
         return this.userPublish;
     }
 
 
+    //סיבוכיות של o(1)
     public Integer getRoomNum() {
         return this.roomNum;
     }
 
-    public int getFloor() {
-        return this.floor;
-    }
-
-    public Integer getHouseNum() {
-        return this.houseNum;
-    }
-
+    //סיבוכיות של o(1)
     public boolean isForRent() {
         return this.isForRent;
     }
 
+    //סיבוכיות של o(1)
     public float getPrice() {
         return this.price;
     }
 
+    //סיבוכיות של o(1)
     private String getPrintableType(Integer type)
      {
-         String output;
-         switch (type) // צריך להוסיף אם טייפ לא שווה לנל? כמו במחלקת סיטי
+         String output = "Invalid" ;
+         if(type!=null)
          {
-             case NORMAL_APARTMENT -> output = "Normal apartment";
-             case PENTHOUSE -> output = "Penthouse";
-             case PRIVATE_HOUSE -> output = "Private house";
-             default -> output = "Invalid";
+             switch (type)
+             {
+                 case NORMAL_APARTMENT -> output = "Normal apartment";
+                 case PENTHOUSE -> output = "Penthouse";
+                 case PRIVATE_HOUSE -> output = "Private house";
+             }
          }
+
          return output;
      }
 
+    //סיבוכיות של o(1)
      public String toString()
      {
          String output = "";
          output+= this.city.getName() + " - " + this.street +"\n";
-         if(this.type!=null)//צריך צלשנות לאם לא שווה לנל ולבדוק את השאר
+         if(this.type!=null)
          {
              output+=getPrintableType(this.type) + " - ";
              if (!this.isForRent)

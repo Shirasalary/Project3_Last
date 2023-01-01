@@ -7,11 +7,13 @@ public class RealEstate {
     public static final City[] CITIES = {City.CITY_1,City.CITY_2,City.CITY_3,City.CITY_4,City.CITY_5,
             City.CITY_6,City.CITY_7,City.CITY_8,City.CITY_9,City.CITY_10};
 
+    //סיבוכיות של o(1)
     public RealEstate()
     {
-       // צריך להשאיר ריק?
+
     }
 
+    //סיבוכיות של o(N)
     public void createUser()
     {
         Scanner scanner = new Scanner(System.in);
@@ -24,7 +26,8 @@ public class RealEstate {
         userName = scanner.nextLine();
         System.out.print("Please enter 1 if you mediator OR 2 if you DONT mediator ");
         mediator = scanner.nextInt();
-        while (isExistUserName(userName) ||(mediator !=1 && mediator!=2) )
+        scanner.nextLine();
+        while (isExistUserName(userName) ||(mediator !=Property.FOR_RENT && mediator!=Property.FOR_SALE) )
         {
             //לפנות את 1 ו2 לפינל
             if (isExistUserName(userName))
@@ -32,14 +35,15 @@ public class RealEstate {
                 System.out.print(" The name is already used.");
                 userName = scanner.nextLine();
             }
-            if (mediator !=1 && mediator!=2)
+            if (mediator !=Property.FOR_RENT && mediator!=Property.FOR_SALE)
             {
                 System.out.print("Please enter 1 OR 2, 1 if you mediator OR 2 if you DONT mediator");
                 mediator = scanner.nextInt();
+                scanner.nextLine();
             }
         }
 
-        if (mediator == 1)
+        if (mediator == Property.FOR_RENT)
         {
             mediatorToBoolean = true;
         }else {
@@ -51,7 +55,7 @@ public class RealEstate {
         System.out.println("at least contains one digit, ");
         System.out.println("at least contains one of the following char '$' '%' '_'");
         password = scanner.nextLine();
-        scanner.nextInt();
+
         newUser.setPassword(password);
         while (newUser.getPassword() == null)
         {
@@ -64,9 +68,8 @@ public class RealEstate {
         }
         System.out.println("Please enter cellPhone: ");
         cellPhone = scanner.nextLine();
-        scanner.nextLine();
         newUser.setCellPhone(cellPhone);
-        while (newUser.getPassword()==null)
+        while (newUser.getCellPhone()==null)
         {
             System.out.print("The cellPhone invalid.Please enter new cellPhone: ");
             cellPhone = scanner.nextLine();
@@ -77,15 +80,19 @@ public class RealEstate {
         System.out.println("The user created successfully");
     }
 
+    //סיבוכיות של o(N)
     public User userLogin()
     {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter your user name");
         String name = scanner.nextLine();
+        System.out.println("Please enter your password");
         String password = scanner.nextLine();
         User userLogin = checkUserExist(name,password);
         return userLogin;
     }
 
+    //סיבוכיות של o(N)
     public  boolean postNewProperty(User user)
     {
         Scanner scanner = new Scanner(System.in);
@@ -95,7 +102,9 @@ public class RealEstate {
             System.out.println("Sorry, you can't publish anymore.You took advantage of the quota");
             isPostNewPropertySuccessfully = false;
         } else {
+            System.out.println("Please choose city from  the following cities");
             printCityName(CITIES);
+            System.out.println("");
             String cityName = scanner.nextLine();
             City userCityInput = getCity(cityName);
             if (userCityInput == null)
@@ -103,6 +112,7 @@ public class RealEstate {
                 System.out.println("Sorry, the city not exist");
                 isPostNewPropertySuccessfully = false;
             }else {
+                System.out.println("Please choose street from  the following streets in the city ");
                 System.out.println(userCityInput.printableStreetsList());
                 String streetInCity = scanner.nextLine();
                 if (!userCityInput.checkStreetInCity(streetInCity))
@@ -137,16 +147,16 @@ public class RealEstate {
                        newProperty.setHouseNum(houseNum);
                        System.out.println("Press 1 if the property for rent OR press 2 if the property for sale");
                        int propertyRentOrSale = scanner.nextInt();
-                       if (propertyRentOrSale == 1)
+                       if (propertyRentOrSale == Property.FOR_RENT)
                        {
                            newProperty.setForRent(true);
                        }
-                       while (propertyRentOrSale!= 1 && propertyRentOrSale !=2)
+                       while (propertyRentOrSale!= Property.FOR_RENT && propertyRentOrSale !=Property.FOR_SALE)
                        {
                            System.out.println("Please press 1 OR 2");
                            System.out.println("Press 1 if the property for rent OR press 2 if the property for sale");
                            propertyRentOrSale = scanner.nextInt();
-                           if (propertyRentOrSale == 1)
+                           if (propertyRentOrSale == Property.FOR_RENT)
                            {
                                newProperty.setForRent(true);
                            }
@@ -164,6 +174,7 @@ public class RealEstate {
         return isPostNewPropertySuccessfully;
     }
 
+    //סיבוכיות של o(N)
     public void printAllProperties()
     {
         if (this.properties == null)
@@ -180,47 +191,54 @@ public class RealEstate {
         }
     }
 
+    //סיבוכיות של o(N)
     public Property[] search()
     {
-        Scanner scanner=new Scanner(System.in);
-        System.out.println("At each step you can enter -999 to IGNORE that parameter");
-        System.out.println("Press 1 if you want property for rent OR press 2 if you want property for sale");
-        int propertyRentOrSale = scanner.nextInt();
-        while (propertyRentOrSale!= Property.FOR_RENT && propertyRentOrSale != Property.FOR_SALE
-                && propertyRentOrSale!=-999)
+        Property[] propertiesByParameters = null;
+        if (this.properties == null)
         {
-            System.out.println("Please press 1 OR 2 OR -999");
+            System.out.println("we dont have properties in the system, press 1 to publish one :)");
+        }else {
+            Scanner scanner=new Scanner(System.in);
+            System.out.println("At each step you can enter -999 to IGNORE that parameter");
             System.out.println("Press 1 if you want property for rent OR press 2 if you want property for sale");
-            propertyRentOrSale = scanner.nextInt();
+            int propertyRentOrSale = scanner.nextInt();
+            while (propertyRentOrSale!= Property.FOR_RENT && propertyRentOrSale != Property.FOR_SALE
+                    && propertyRentOrSale!=-999)
+            {
+                System.out.println("Please press 1 OR 2 OR -999");
+                System.out.println("Press 1 if you want property for rent OR press 2 if you want property for sale");
+                propertyRentOrSale = scanner.nextInt();
 
-        }
-        System.out.println("Which type of property you looking for?");
-        System.out.println("Please press 1 for NORMAL APARTMENT");
-        System.out.println("Please press 2 for PENTHOUSE");
-        System.out.println("Please press 3 for PRIVATE HOUSE");
-        Integer tapeOfProperty = scanner.nextInt();
-        while (tapeOfProperty!= Property.NORMAL_APARTMENT && tapeOfProperty !=Property.PENTHOUSE
-                && tapeOfProperty !=Property.PRIVATE_HOUSE && tapeOfProperty!=-999)
-        {
-            System.out.println("Please choose between 1 to 3 OR -999");
+            }
+            System.out.println("Which type of property you looking for?");
             System.out.println("Please press 1 for NORMAL APARTMENT");
             System.out.println("Please press 2 for PENTHOUSE");
             System.out.println("Please press 3 for PRIVATE HOUSE");
-            tapeOfProperty = scanner.nextInt();
+            Integer tapeOfProperty = scanner.nextInt();
+            while (tapeOfProperty!= Property.NORMAL_APARTMENT && tapeOfProperty !=Property.PENTHOUSE
+                    && tapeOfProperty !=Property.PRIVATE_HOUSE && tapeOfProperty!=-999)
+            {
+                System.out.println("Please choose between 1 to 3 OR -999");
+                System.out.println("Please press 1 for NORMAL APARTMENT");
+                System.out.println("Please press 2 for PENTHOUSE");
+                System.out.println("Please press 3 for PRIVATE HOUSE");
+                tapeOfProperty = scanner.nextInt();
+            }
+            System.out.println("How many rooms?");
+            Integer roomsNum = scanner.nextInt();
+
+            System.out.println("Enter Min Price");
+            float minPrice = scanner.nextInt();
+
+            System.out.println("Enter Max Price");
+            float maxPrice = scanner.nextInt();
+            propertiesByParameters = createPropertiesByParameters(propertyRentOrSale,tapeOfProperty,roomsNum,minPrice,maxPrice);
         }
-        System.out.println("How many rooms?");
-        Integer roomsNum = scanner.nextInt();
-
-        System.out.println("Enter Min Price");
-        float minPrice = scanner.nextInt();
-
-        System.out.println("Enter Max Price");
-        float maxPrice = scanner.nextInt();
-        Property[] propertiesByParameters = createPropertiesByParameters(propertyRentOrSale,tapeOfProperty,roomsNum,minPrice,maxPrice);
-        //לבדוק ולטפל במקרה של כפילויות של נכסים לדוגמא נכס שהוא גם להשכרה וגם 4 חדרים יספר פעמיים
         return propertiesByParameters;
     }
 
+    //סיבוכיות של o(N)
     private int countPropertiesByParameters (int propertyRentOrSale,Integer tapeOfProperty,
                                                Integer roomsNum,float minPrice,float maxPrice)
     {   int countPropertiesByParameters = 0;
@@ -284,7 +302,7 @@ public class RealEstate {
         }
         return countPropertiesByParameters;
     }
-
+    //סיבוכיות של o(N)
     private Property[] createPropertiesByParameters (int propertyRentOrSale,Integer tapeOfProperty,
                                              Integer roomsNum,float minPrice,float maxPrice  )
     {   Property[] propertiesByParameters = null;
@@ -360,7 +378,7 @@ public class RealEstate {
         return propertiesByParameters;
     }
 
-
+    //סיבוכיות של o(N)
     public void removeProperty(User user){
         Scanner scanner = new Scanner(System.in);
         int removeNum;
@@ -376,38 +394,83 @@ public class RealEstate {
                 System.out.println("chose number between 1 to " + userProperties.length);
                 removeNum=scanner.nextInt();
             }
-            userProperties[removeNum-1]=null;
+            Integer indexOfPropertyInArrayProperties = getIndexOfPropertyInArrayProperties(userProperties[removeNum-1]);
+            this.properties[indexOfPropertyInArrayProperties] = null;
+            removeNullFromArrayProperties(this.properties);
+            System.out.println("The property successfully removed");
         }
 
     }
+
+    //סיבוכיות של o(N)
+    private void removeNullFromArrayProperties (Property[] properties)
+    {
+        if (properties.length == 1 && properties[0] == null)
+        {
+            this.properties = null;
+        }else {
+            int countNullAtArrayProperties = countNullAtArrayProperties(properties);
+            int indexOfPropertiesWithOutNull =0;
+            Property[] propertiesWithOutNull = new Property[countNullAtArrayProperties];
+            for (int i = 0;i<properties.length;i++)
+            {
+               if (properties[i]!=null)
+               {
+                 propertiesWithOutNull[indexOfPropertiesWithOutNull] = properties[i];
+                 indexOfPropertiesWithOutNull++;
+               }
+            }
+            this.properties = propertiesWithOutNull;
+        }
+    }
+
+    //סיבוכיות של o(N)
+    private int countNullAtArrayProperties (Property[] properties)
+    {
+        int countNullAtArrayProperties = 0;
+        if(properties!=null)
+        {
+            for (int i = 0;i<properties.length;i++)
+            {
+                if (properties[i] == null)
+                {
+                    countNullAtArrayProperties++;
+                }
+            }
+        }
+        return countNullAtArrayProperties;
+    }
+
+    //סיבוכיות של o(N)
+    private Integer getIndexOfPropertyInArrayProperties(Property property)
+    {
+        Integer indexOfPropertyInArrayProperties = null;
+        if (this.properties !=null)
+        {
+          for (int i=0; i<this.properties.length;i++)
+          {
+              if (this.properties[i] == property)
+              {
+                 indexOfPropertyInArrayProperties = i;
+                 break;
+              }
+          }
+        }
+        return indexOfPropertyInArrayProperties;
+    }
+
+    //סיבוכיות של o(N)
     private void printUserProperty(Property[] userProperties){
         if(userProperties!=null){
             for (int i =0; i<userProperties.length; i++){
-                System.out.println("property number "+i);
+                System.out.println("property number "+(i+1));
                 System.out.println(userProperties[i]);
                 System.out.println();
             }
         }
     }
 
-
-    public void printProperties(User user)
-    {
-        Property[] listUserProperties = listUserProperties(user);
-        if (listUserProperties ==null)
-        {
-            System.out.println("The user have NO properties in the system");
-        }else {
-            for (int i = 0; i<listUserProperties.length; i++)
-            {
-                System.out.println("The properties of the user: ");
-                System.out.println("number " + (i+1));
-                System.out.println(listUserProperties[i]);
-                System.out.println();
-            }
-        }
-    }
-
+    //סיבוכיות של o(N)
     private Property[] listUserProperties(User user)
     {
         Property[] listUserProperties = null;
@@ -438,6 +501,26 @@ public class RealEstate {
         }
         return listUserProperties;
     }
+
+    //סיבוכיות של o(N)
+    public void printProperties(User user)
+    {
+        Property[] listUserProperties = listUserProperties(user);
+        if (listUserProperties ==null)
+        {
+            System.out.println("The user have NO properties in the system");
+        }else {
+            for (int i = 0; i<listUserProperties.length; i++)
+            {
+                System.out.println("The properties of the user: ");
+                System.out.println("number " + (i+1));
+                System.out.println(listUserProperties[i]);
+                System.out.println();
+            }
+        }
+    }
+
+    //סיבוכיות של o(N)
     private void addProperty( Property newProperty)
     {
         if (this.properties == null)
@@ -456,6 +539,7 @@ public class RealEstate {
         }
     }
 
+    //סיבוכיות של o(N)
     private City getCity(String cityName)
     {
         City getCity = null;
@@ -469,6 +553,8 @@ public class RealEstate {
         }
         return getCity;
     }
+
+    //סיבוכיות של o(N)
     private void printCityName (City[] cities)
     {
         for (int i = 0; i < cities.length; i++)
@@ -478,6 +564,7 @@ public class RealEstate {
         }
     }
 
+    //סיבוכיות של o(N)
     private boolean isAuthorizedToPublish(User user)
     {
         boolean isAuthorizedToPublish = true;
@@ -509,6 +596,7 @@ public class RealEstate {
         return isAuthorizedToPublish;
     }
 
+    //סיבוכיות של o(N)
     private User checkUserExist(String name, String password) {
         User userExist = null;
         if (this.users != null)
@@ -525,11 +613,10 @@ public class RealEstate {
        return  userExist;
     }
 
-
+    //סיבוכיות של o(N)
     private void addUser(User newUser)
     {
-       if (this.users == null)
-       {
+       if (this.users == null){
            User[] newUsers = new User[1];
            newUsers[0]=newUser;
            this.users = newUsers;
@@ -544,6 +631,7 @@ public class RealEstate {
        }
     }
 
+    //סיבוכיות של o(N)
     private boolean isExistUserName(String name)
     {
         boolean isExistUserName = false;

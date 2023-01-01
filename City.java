@@ -22,7 +22,7 @@ public class City {
     public static final City CITY_9 =new City("tveria",5,STREETS1);
     public static final City CITY_10 =new City("rmat hagolan",5,STREETS2);
 
-
+//סיבוכיות של o(1)
     public City(String name,Integer region,String[] streetList)
     {
         this.name= name;
@@ -33,21 +33,24 @@ public class City {
         this.streetList = streetList;
     }
 
+    //סיבוכיות של o(1)
     public String getName()
     {
         return this.name;
     }
 
+    //סיבוכיות של o(1)
     public boolean isEquals(String name)
     {
         boolean isEquals = false;
-        if (this.name == name)
+        if (this.name.equals(name))
         {
             isEquals = true;
         }
         return isEquals;
     }
 
+    //סיבוכיות של o(N)
     public String toString()
     {
         String output="";
@@ -64,6 +67,7 @@ public class City {
 
         return output;
     }
+    //סיבוכיות של o(1)
     private String getPrintableRegion(Integer region)
     {
         String output = "Invalid";
@@ -80,13 +84,14 @@ public class City {
         return output;
     }
 
+    //סיבוכיות של o(N)
     public boolean checkStreetInCity(String street)
     {
         boolean isInCity = false;
         if(this.streetList != null) {
 
             for (int i = 0; i < this.streetList.length; i++) {
-                if (this.streetList[i] == street) {
+                if (this.streetList[i].equals(street)) {
                     isInCity = true;
                     break;
                 }
@@ -95,6 +100,7 @@ public class City {
         return isInCity;
     }
 
+    //סיבוכיות של o(N)
     public String printableStreetsList()
     {
         String arrayValue ="";
